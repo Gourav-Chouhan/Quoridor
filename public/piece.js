@@ -2,9 +2,6 @@ let boxColor = "#769656";
 let groveColor = "#eeeed2";
 let barrierColor = "#173f00";
 
-const rows = 7;
-const pl = rows - 1;
-const gridSize = rows * 2 - 1;
 let bw; //bar width
 let shift;
 let p1, p2;
@@ -12,26 +9,6 @@ let currentPlayer;
 let mode = "move";
 
 document.getElementById("canvas-container").style.backgroundColor = groveColor;
-
-if (isWhite) {
-  yourLoc = {
-    x: pl,
-    y: 0,
-  };
-  opponentLoc = {
-    x: pl,
-    y: gridSize - 1,
-  };
-} else {
-  opponentLoc = {
-    x: pl,
-    y: 0,
-  };
-  yourLoc = {
-    x: pl,
-    y: gridSize - 1,
-  };
-}
 
 class Piece {
   constructor(x, y, color) {
@@ -140,18 +117,10 @@ class Place {
       this.py = fwdy;
     }
   }
+
   show() {
     fill(this.color);
     rect(this.px, this.py, this.w, this.h, 7);
-    if (this.hasPiece) {
-      fill(this.pcolor);
-      ellipse(
-        this.px + 1.5 * bw,
-        this.py + 1.5 * bw,
-        this.w * 0.8,
-        this.w * 0.8
-      );
-    }
   }
 
   drawLegalPlace() {
@@ -223,5 +192,27 @@ class Grid {
         this.legalPlaces.push(this.grid[y][x - 2]);
       }
     }
+
+    if (y - 1 > 0 && !this.grid[y - 1][x].blocked) {
+      if (!this.grid[y - 2][x].hasPiece) {
+        this.legalPlaces.push(this.grid[y - 2][x]);
+      }
+    }
+
+    if (x + 1 < this.size && !this.grid[y][x + 1].blocked) {
+      if (!this.grid[y][x + 2].hasPiece) {
+        this.legalPlaces.push(this.grid[y][x + 2]);
+      }
+    }
+
+    if (y + 1 < this.size && !this.grid[y + 1][x].blocked) {
+      if (!this.grid[y + 2][x].hasPiece) {
+        this.legalPlaces.push(this.grid[y + 2][x]);
+      }
+    }
   }
+}
+
+function fireThatFunc() {
+  g.getLegalPlaces();
 }

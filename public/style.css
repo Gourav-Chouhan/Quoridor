@@ -125,3 +125,7 @@ button {
 #canvas-container {
   transform: rotate(30deg);
 } */
+
+#yourTurn {
+  color: white;
+}

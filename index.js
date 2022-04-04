@@ -7,12 +7,12 @@ const { Server } = require("socket.io");
 const io = new Server(server);
 app.use(express.json());
 
-const User = require("./model/user");
+// const User = require("./model/user");
 
-mongoose.connect("mongodb://localhost:27017/login-app-db", {
-  useNewUrlPasrer: true,
-  useUnifiedTopology: true,
-});
+// mongoose.connect("mongodb://localhost:27017/login-app-db", {
+//   useNewUrlPasrer: true,
+//   useUnifiedTopology: true,
+// });
 
 let connected = [];
 let queue = [];

@@ -4,6 +4,10 @@ let match;
 let turn = false;
 let opponent;
 let isWhite = false;
+const rows = 7;
+const pl = rows - 1;
+const gridSize = rows * 2 - 1;
+let allSet = false;
 
 let yourLoc = {};
 let opponentLoc = {};
@@ -51,13 +55,44 @@ socket.on("matched", (data) => {
   if (socketId == data.p1.socketId && data.p1.turn) {
     turn = true;
     isWhite = true;
+    allSet = true;
     alert(`you have been matched to ${data.p2.email} and its your turn`);
   } else {
     document.getElementById("canvas-container").style.transform =
       "rotate(180deg)";
     isWhite = false;
     turn = false;
+    allSet = true;
+
     alert(`You have been matched to ${data.p2.email} and its opponent turn`);
+  }
+
+  setTimeout(() => {
+    fireThatFunc();
+  }, 1000);
+
+  if (isWhite) {
+    opponentLoc = {
+      x: pl,
+      y: 0,
+      color: "black",
+    };
+    yourLoc = {
+      x: pl,
+      y: gridSize - 1,
+      color: "white",
+    };
+  } else {
+    yourLoc = {
+      x: pl,
+      y: 0,
+      color: "black",
+    };
+    opponentLoc = {
+      x: pl,
+      y: gridSize - 1,
+      color: "white",
+    };
   }
 });
 
