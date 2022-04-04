@@ -190,24 +190,105 @@ class Grid {
     if (x - 1 > 0 && !this.grid[y][x - 1].blocked) {
       if (!this.grid[y][x - 2].hasPiece) {
         this.legalPlaces.push(this.grid[y][x - 2]);
+      } else {
+        if (x - 3 > 0) {
+          if (!this.grid[y][x - 3].blocked) {
+            this.legalPlaces.push(this.grid[y][x - 4]);
+          } else {
+            if (!this.grid[y - 1][x - 2].blocked) {
+              this.legalPlaces.push(this.grid[y - 2][x - 2]);
+            }
+            if (!this.grid[y + 1][x - 2].blocked) {
+              this.legalPlaces.push(this.grid[y + 2][x - 2]);
+            }
+          }
+        } else {
+          if (!this.grid[y - 1][x - 2].blocked) {
+            this.legalPlaces.push(this.grid[y - 2][x - 2]);
+          }
+          if (!this.grid[y + 1][x - 2].blocked) {
+            this.legalPlaces.push(this.grid[y + 2][x - 2]);
+          }
+        }
       }
     }
 
     if (y - 1 > 0 && !this.grid[y - 1][x].blocked) {
       if (!this.grid[y - 2][x].hasPiece) {
         this.legalPlaces.push(this.grid[y - 2][x]);
+      } else {
+        if (y - 3 > 0) {
+          if (!this.grid[y - 3][x].blocked) {
+            this.legalPlaces.push(this.grid[y - 4][x]);
+          } else {
+            if (!this.grid[y - 2][x - 1].blocked) {
+              this.legalPlaces.push(this.grid[y - 2][x - 2]);
+            }
+            if (!this.grid[y - 2][x + 1].blocked) {
+              this.legalPlaces.push(this.grid[y - 2][x + 2]);
+            }
+          }
+        } else {
+          if (!this.grid[y - 2][x - 1].blocked) {
+            this.legalPlaces.push(this.grid[y - 2][x - 2]);
+          }
+          if (!this.grid[y - 2][x + 1].blocked) {
+            this.legalPlaces.push(this.grid[y - 2][x + 2]);
+          }
+        }
       }
     }
 
     if (x + 1 < this.size && !this.grid[y][x + 1].blocked) {
       if (!this.grid[y][x + 2].hasPiece) {
         this.legalPlaces.push(this.grid[y][x + 2]);
+      } else {
+        if (x + 3 < this.size) {
+          if (!this.grid[y][x + 3].blocked) {
+            this.legalPlaces.push(this.grid[y][x + 4]);
+          } else {
+            if (!this.grid[y - 1][x + 2].blocked) {
+              this.legalPlaces.push(this.grid[y - 2][x + 2]);
+            }
+            if (!this.grid[y + 1][x + 2].blocked) {
+              this.legalPlaces.push(this.grid[y + 2][x + 2]);
+            }
+          }
+        } else {
+          if (!this.grid[y - 1][x + 2].blocked) {
+            this.legalPlaces.push(this.grid[y - 2][x + 2]);
+          }
+          if (!this.grid[y + 1][x + 2].blocked) {
+            this.legalPlaces.push(this.grid[y + 2][x + 2]);
+          }
+        }
       }
     }
 
     if (y + 1 < this.size && !this.grid[y + 1][x].blocked) {
       if (!this.grid[y + 2][x].hasPiece) {
         this.legalPlaces.push(this.grid[y + 2][x]);
+      } else {
+        if (y + 3 < this.size) {
+          if (!this.grid[y + 3][x].blocked) {
+            this.legalPlaces.push(this.grid[y + 4][x]);
+          } else {
+            if (!this.grid[y + 2][x - 1].blocked) {
+              this.legalPlaces.push(this.grid[y + 2][x - 2]);
+            }
+            if (!this.grid[y + 2][x + 1].blocked) {
+              this.legalPlaces.push(this.grid[y + 2][x + 2]);
+            }
+          }
+        } else {
+          if (!this.grid[y + 2][x - 1].blocked) {
+            this.legalPlaces.push(this.grid[y + 2][x - 2]);
+          }
+          if (!this.grid[y + 2][x + 1].blocked) {
+            this.legalPlaces.push(this.grid[y + 2][x + 2]);
+          }
+        }
+        ("");
       }
     }
   }
@@ -215,4 +296,46 @@ class Grid {
 
 function fireThatFunc() {
   g.getLegalPlaces();
+}
+
+function isLegalRec(tempGrid, cloc, destination) {
+  console.log(cloc);
+  let { x, y } = cloc;
+  // console.log("line 303", x, y);
+  visited[y][x] = true;
+  if (y == destination) {
+    console.log("returning true");
+    return true;
+  }
+  let a = false;
+  let b = false;
+  let c = false;
+  let d = false;
+  if (x - 1 > 0 && !tempGrid[y][x - 1].blocked && !visited[y][x - 2]) {
+    a = isLegalRec(tempGrid, { x: x - 2, y }, destination);
+  }
+  if (y - 1 > 0 && !tempGrid[y - 1][x].blocked && !visited[y - 2][x]) {
+    b = isLegalRec(tempGrid, { x, y: y - 2 }, destination);
+  }
+  if (x + 1 < g.size && !tempGrid[y][x + 1].blocked && !visited[y][x + 2]) {
+    c = isLegalRec(tempGrid, { x: x + 2, y }, destination);
+  }
+  if (y + 1 < g.size && !tempGrid[y + 1][x].blocked && !visited[y + 2][x]) {
+    d = isLegalRec(tempGrid, { x, y: y + 2 }, destination);
+  }
+
+  console.log("returning false");
+  return a || b || c || d;
+}
+
+let visited = [];
+
+function isLegal(cloc, destination) {
+  visited = [];
+  for (let i = 0; i < gridSize; i++) {
+    visited[i] = new Array(gridSize).fill(false);
+  }
+  let tempGrid = JSON.parse(JSON.stringify(g.grid));
+
+  return isLegalRec(tempGrid, cloc, destination);
 }

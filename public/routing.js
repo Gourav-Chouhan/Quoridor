@@ -4,7 +4,7 @@ let match;
 let turn = false;
 let opponent;
 let isWhite = false;
-const rows = 7;
+const rows = 5;
 const pl = rows - 1;
 const gridSize = rows * 2 - 1;
 let allSet = false;
@@ -29,7 +29,6 @@ socket.on("welcome", (data) => {
 let arr = [];
 
 socket.on("test", (data) => {
-  console.log(data);
   arr = data;
 });
 
@@ -46,16 +45,24 @@ socket.on("matched", (data) => {
   let imgdiv2 = document.createElement("img");
   imgdiv2.src = data.p2.imageUrl;
   imgdiv2.crossOrigin = "Anonymous";
-
-  document.getElementById("forOpponent").appendChild(namediv2);
-  document.getElementById("forOpponent").appendChild(imgdiv2);
-  document.getElementById("forYou").appendChild(imgdiv1);
-  document.getElementById("forYou").appendChild(namediv1);
+  let yourCircle = document.createElement("div");
+  let opponentCircle = document.createElement("div");
+  yourCircle.className = "circle";
+  opponentCircle.className = "circle";
 
   if (socketId == data.p1.socketId && data.p1.turn) {
     turn = true;
     isWhite = true;
     allSet = true;
+    yourCircle.style.backgroundColor = "white";
+    opponentCircle.style.backgroundColor = "black";
+
+    document.getElementById("forOpponent").appendChild(namediv2);
+    document.getElementById("forOpponent").appendChild(opponentCircle);
+    document.getElementById("forOpponent").appendChild(imgdiv2);
+    document.getElementById("forYou").appendChild(imgdiv1);
+    document.getElementById("forYou").appendChild(yourCircle);
+    document.getElementById("forYou").appendChild(namediv1);
     alert(`you have been matched to ${data.p2.email} and its your turn`);
   } else {
     document.getElementById("canvas-container").style.transform =
@@ -63,7 +70,15 @@ socket.on("matched", (data) => {
     isWhite = false;
     turn = false;
     allSet = true;
+    yourCircle.style.backgroundColor = "black";
+    opponentCircle.style.backgroundColor = "white";
 
+    document.getElementById("forOpponent").appendChild(namediv2);
+    document.getElementById("forOpponent").appendChild(opponentCircle);
+    document.getElementById("forOpponent").appendChild(imgdiv2);
+    document.getElementById("forYou").appendChild(imgdiv1);
+    document.getElementById("forYou").appendChild(yourCircle);
+    document.getElementById("forYou").appendChild(namediv1);
     alert(`You have been matched to ${data.p2.email} and its opponent turn`);
   }
 

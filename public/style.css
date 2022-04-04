@@ -129,3 +129,10 @@ button {
 #yourTurn {
   color: white;
 }
+
+.circle {
+  border-radius: 50%;
+  height: 30px;
+  width: 30px;
+  border: 2px solid #eeeed2;
+}

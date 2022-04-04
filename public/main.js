@@ -19,7 +19,6 @@ function setup() {
 
 function drawPiece() {
   // fill("red");
-  // console.log(yourLoc.color);
   fill(`${yourLoc.color}`);
   ellipse(
     g.grid[yourLoc.y][yourLoc.x].px + 1.5 * bw,
@@ -31,7 +30,6 @@ function drawPiece() {
   fill(`${opponentLoc.color}`);
 
   // fill(opponentLoc.color);
-  // console.log(yourLoc.color, opponentLoc.color);
   ellipse(
     g.grid[opponentLoc.y][opponentLoc.x].px + 1.5 * bw,
     g.grid[opponentLoc.y][opponentLoc.x].py + 1.5 * bw,
@@ -95,35 +93,64 @@ function toMoveMode() {
   mode = "move";
 }
 
-function addBar(dx, dy, barMode) {
+function addBar(dx, dy, barMode, isVIP = false) {
   if (barMode == "hbar" && g.grid[dy][dx].hBlock == false) {
+    g.grid[dy][dx - 1].blocked = true;
+    g.grid[dy][dx + 1].blocked = true;
+    if (isVIP) {
+    } else if (isWhite) {
+      if (
+        !isLegal({ x: yourLoc.x, y: yourLoc.y }, 0) ||
+        !isLegal({ x: opponentLoc.x, y: opponentLoc.y }, gridSize - 1)
+      ) {
+        alert("illegal move");
+        g.grid[dy][dx - 1].blocked = false;
+        g.grid[dy][dx + 1].blocked = false;
+        return false;
+      }
+    } else {
+      if (
+        !isLegal({ x: yourLoc.x, y: yourLoc.y }, gridSize - 1) ||
+        !isLegal({ x: opponentLoc.x, y: opponentLoc.y }, 0)
+      ) {
+        alert("illegal move");
+        g.grid[dy][dx - 1].blocked = false;
+        g.grid[dy][dx + 1].blocked = false;
+        return false;
+      }
+    }
     dx + 2 < gridSize ? (g.grid[dy][dx + 2].hBlock = true) : null;
     dx - 2 > 0 ? (g.grid[dy][dx - 2].hBlock = true) : null;
     g.grid[dy][dx].vBlock = true;
     g.grid[dy][dx].hBlock = true;
     g.grid[dy][dx].filled = "hbar";
-    g.grid[dy][dx - 1].blocked = true;
-    g.grid[dy][dx + 1].blocked = true;
     g.blockedDots.push(g.grid[dy][dx]);
+
     return true;
   } else if (barMode == "vbar" && g.grid[dy][dx].vBlock == false) {
+    g.grid[dy - 1][dx].blocked = true;
+    g.grid[dy + 1][dx].blocked = true;
+    if (isVIP) {
+    } else if (!isLegal({ x: yourLoc.x, y: yourLoc.y }, 0)) {
+      alert("illegal move");
+      g.grid[dy - 1][dx].blocked = false;
+      g.grid[dy + 1][dx].blocked = false;
+      return false;
+    }
     dy + 2 < gridSize ? (g.grid[dy + 2][dx].vBlock = true) : null;
     dy - 2 > 0 ? (g.grid[dy - 2][dx].vBlock = true) : null;
     g.grid[dy][dx].vBlock = true;
     g.grid[dy][dx].hBlock = true;
-    g.grid[dy - 1][dx].blocked = true;
-    g.grid[dy + 1][dx].blocked = true;
-    g.grid[dy][dx].filled = "vbar";
     g.blockedDots.push(g.grid[dy][dx]);
+    g.grid[dy][dx].filled = "vbar";
     return true;
   }
   return false;
 }
 
 socket.on("matchMoves", (data) => {
-  // console.log(data);
   if (data.type == "bar") {
-    addBar(data.dx, data.dy, data.mode);
+    addBar(data.dx, data.dy, data.mode, true);
   } else if (data.type == "move") {
     opponentLoc = {
       x: data.newLocation.x,
@@ -155,7 +182,6 @@ document.getElementById("canvas-container").addEventListener("click", (e) => {
           minPlace = g.legalPlaces[i];
         }
       }
-      console.log(minDist);
       if (minDist < 1.5 * bw) {
         let { x, y, color } = yourLoc;
         yourLoc = { x: minPlace.x, y: minPlace.y, color };
@@ -173,7 +199,6 @@ document.getElementById("canvas-container").addEventListener("click", (e) => {
       let dotPlace = g.getIndex(e.offsetX, e.offsetY);
       let dx = dotPlace.x;
       let dy = dotPlace.y;
-      console.log(dx, dy);
       if (addBar(dx, dy, mode)) {
         socket.emit("matchMoves", {
           type: "bar",
