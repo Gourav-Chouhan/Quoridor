@@ -1,0 +1,127 @@
+@import url("https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  user-select: none;
+  font-family: "Luckiest Guy", cursive;
+}
+
+html,
+body {
+  width: 100vw;
+  height: 100vh;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  background: black;
+  /* color: #ff8cb8; */
+}
+
+button {
+  background: #ff8cb8;
+  border: none;
+  border-radius: 5px;
+  color: black;
+  font-size: 1.5rem;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  margin: 0.5rem;
+  /* color: rgb(0, 255, 0) */
+}
+
+.forSelection {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.test-div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.container {
+  /* display: none; */
+  height: 100vh;
+}
+
+.menu {
+  padding: 30px;
+  color: white;
+  height: 60vh;
+  border: 2px solid white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.281);
+  width: 40ch;
+}
+
+.login-page {
+  height: 400px;
+  width: 400px;
+  background: red;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.menu * {
+  padding: 6px;
+}
+
+.menu h2 {
+  margin-top: auto;
+}
+
+.menu span {
+  color: rgb(0, 255, 0);
+}
+
+.menu .test-div {
+  margin-top: auto;
+  /* width: 500px; */
+}
+
+.test-div button {
+  color: white;
+}
+
+.forCanvas {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 3px;
+  border: 10px solid #eeeed2;
+  /* display: none; */
+  border-radius: 10px;
+}
+
+.player-name {
+  width: 100%;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.player-name * {
+  color: white;
+}
+
+.player-name img {
+  height: 3.5rem;
+  border-radius: 50%;
+}
+/* 
+#canvas-container {
+  transform: rotate(30deg);
+} */

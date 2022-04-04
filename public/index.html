@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <meta
+      name="google-signin-client_id"
+      content="1023157306896-gf853hu70rsca3vktm2hdpjldcfucoep.apps.googleusercontent.com"
+    />
+    <title>Quoridor</title>
+  </head>
+  <body>
+    <!-- login page -->
+
+    <div class="login-page" id="login-page">
+      <div class="container">
+        <div>
+          <h2>Welcome to</h2>
+          <h1>Quoridor</h1>
+        </div>
+        <div class="g-signin2" data-onsuccess="onSignIn"></div>
+      </div>
+    </div>
+
+    <!-- _____________________________________________ -->
+
+    <!-- menu-page -->
+    <div class="menu">
+      <h2>Hello <span id="usrName"></span></h2>
+      <h3>Welcome</h3>
+      <h3>To</h3>
+      <h1>Quoridor</h1>
+      <div class="test-div"><button id="findRandom">Find Random</button></div>
+    </div>
+
+    <!-- _______________________________________________ -->
+
+    <div class="container">
+      <div class="forOpponent player-name" id="forOpponent"></div>
+      <div class="forCanvas" id="canvas-container"></div>
+      <div class="forYou player-name" id="forYou"></div>
+
+      <div class="forSelection">
+        <button onclick="toHbarMode()" id="hbar">Hbar</button>
+        <button onclick="toMoveMode()" id="move">Move</button>
+        <button onclick="toVbarMode()" id="vbar">Vbar</button>
+      </div>
+    </div>
+
+    <!-- _____________________________________________ -->
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script> -->
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/addons/p5.sound.min.js"></script> -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="p5.min.js"></script>
+    <script src="routing.js"></script>
+    <script src="piece.js"></script>
+    <script src="main.js"></script>
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <script src="auth.js"></script>
+  </body>
+</html>
