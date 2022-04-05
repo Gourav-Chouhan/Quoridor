@@ -15,6 +15,8 @@ body {
 
 body {
   display: flex;
+  position: relative;
+  z-index: 1;
   justify-content: center;
   align-items: center;
   flex-direction: column;
@@ -46,9 +48,13 @@ button {
   align-items: center;
 }
 
-.container {
-  /* display: none; */
+#container {
+  display: none;
   height: 100vh;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  /* border: 5px solid red; */
 }
 
 .menu {
@@ -130,9 +136,55 @@ button {
   color: white;
 }
 
+.card {
+  width: clamp(300px, 50vw, 500px);
+  margin-bottom: 20px;
+  box-shadow: 0 14px 16px 0 rgba(0, 0, 0, 0.329);
+  border-radius: 8px;
+  background-color: #769656;
+  display: flex;
+  justify-content: space-around;
+  flex-direction: column;
+  align-items: center;
+  color: white;
+  height: 60%;
+}
+
 .circle {
   border-radius: 50%;
   height: 30px;
   width: 30px;
   border: 2px solid #eeeed2;
+}
+
+.pop-up {
+  position: absolute;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  background: #769656;
+  border: 1px solid #eeeed2;
+  box-shadow: 0 0 20px #eeeed2;
+  width: 20ch;
+  height: 20ch;
+  border-radius: 35px;
+  padding: 10px;
+  margin: 10px;
+  z-index: 10;
+}
+
+.pop-up p {
+  padding: 10px;
+  color: white;
+}
+
+#pop-up-button {
+  color: white;
+  background-color: #173f00;
+  font-size: 1.1rem;
+  position: absolute;
+  margin-left: auto;
+  margin-right: auto;
+  bottom: 1ch;
 }

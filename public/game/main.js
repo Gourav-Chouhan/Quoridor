@@ -7,7 +7,7 @@ let cvs;
 let g;
 
 function setup() {
-  cvs = createCanvas(500, 500);
+  cvs = createCanvas(450, 450);
   cvs.parent("canvas-container");
   noStroke();
   cvs.className = "cvs";
@@ -39,22 +39,24 @@ function drawPiece() {
 }
 
 function draw() {
-  g.show();
-  // noLoop();
-  if (turn) {
-    for (let legalPlace of g.legalPlaces) {
-      legalPlace.drawLegalPlace();
+  if (playing) {
+    g.show();
+    // noLoop();
+    if (turn && mode == "move") {
+      for (let legalPlace of g.legalPlaces) {
+        legalPlace.drawLegalPlace();
+      }
     }
-  }
-  if (turn) {
-    document.getElementById("yourTurn").textContent = "Your Turn";
-  } else {
-    document.getElementById("yourTurn").textContent = "Opponent's Turn";
-  }
-  if (allSet) {
-    drawPiece();
-    checkWinYou();
-    // checkWinOpp();
+    if (turn) {
+      document.getElementById("yourTurn").textContent = "Your Turn";
+    } else {
+      document.getElementById("yourTurn").textContent = "Opponent's Turn";
+    }
+    if (allSet && playing) {
+      drawPiece();
+      checkWinYou();
+      // checkWinOpp();
+    }
   }
 }
 
@@ -106,7 +108,7 @@ function addBar(dx, dy, barMode, isVIP = false) {
         !isLegal({ x: yourLoc.x, y: yourLoc.y }, 0) ||
         !isLegal({ x: opponentLoc.x, y: opponentLoc.y }, gridSize - 1)
       ) {
-        alert("illegal move");
+        // alert("illegal move");
         g.grid[dy][dx - 1].blocked = false;
         g.grid[dy][dx + 1].blocked = false;
         return false;
@@ -116,7 +118,7 @@ function addBar(dx, dy, barMode, isVIP = false) {
         !isLegal({ x: yourLoc.x, y: yourLoc.y }, gridSize - 1) ||
         !isLegal({ x: opponentLoc.x, y: opponentLoc.y }, 0)
       ) {
-        alert("illegal move");
+        // alert("illegal move");
         g.grid[dy][dx - 1].blocked = false;
         g.grid[dy][dx + 1].blocked = false;
         return false;
@@ -135,7 +137,7 @@ function addBar(dx, dy, barMode, isVIP = false) {
     g.grid[dy + 1][dx].blocked = true;
     if (isVIP) {
     } else if (!isLegal({ x: yourLoc.x, y: yourLoc.y }, 0)) {
-      alert("illegal move");
+      // alert("illegal move");
       g.grid[dy - 1][dx].blocked = false;
       g.grid[dy + 1][dx].blocked = false;
       return false;
@@ -163,7 +165,9 @@ socket.on("matchMoves", (data) => {
     g.grid[data.prevLocation.y][data.prevLocation.x].hasPiece = false;
     g.grid[data.newLocation.y][data.newLocation.x].hasPiece = true;
   } else if (data.type == "matchOver") {
-    alert("You Loose");
+    // alert("You Loose");
+  } else if (data.type == "disconnect") {
+    showPopUp(data.msg);
   }
   g.getLegalPlaces();
   turn = true;
@@ -171,7 +175,6 @@ socket.on("matchMoves", (data) => {
 
 document.getElementById("canvas-container").addEventListener("click", (e) => {
   if (turn) {
-    g.getIndex(e.offsetX, e.offsetY);
     if (mode == "move") {
       let minDist = Infinity;
       let minPlace = null;
@@ -202,6 +205,7 @@ document.getElementById("canvas-container").addEventListener("click", (e) => {
       }
     } else {
       let dotPlace = g.getIndex(e.offsetX, e.offsetY);
+      if (!dotPlace) return;
       let dx = dotPlace.x;
       let dy = dotPlace.y;
       if (addBar(dx, dy, mode)) {
@@ -217,3 +221,23 @@ document.getElementById("canvas-container").addEventListener("click", (e) => {
     }
   }
 });
+
+function showPopUp(msg) {
+  document.getElementById("pop-up").style.display = "flex";
+  document.getElementById("pop-up-message").textContent = msg;
+}
+
+function backToHome() {
+  //reload the page
+  window.location.reload();
+  // document.getElementById("container").style.display = "none";
+  // document.getElementById("menu").style.display = "flex";
+  // document.getElementById("pop-up").style.display = "none";
+  // g = new Grid(gridSize);
+  // mode = "move";
+  // turn = false;
+  // document.getElementById("findRandom").textContent = "Find Random";
+  // playing = false;
+  // document.getElementById("canvas-container").style.transform = "rotate(0deg)";
+  // socket.emit("toIdleMode", socketId);
+}

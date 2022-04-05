@@ -43,17 +43,50 @@ class Match {
   }
 }
 
-app.use("/", express.static(path.join(__dirname, "public")));
-
-app.get("/", (req, res) => {
-  //   res.send(path.join(__dirname, "public"));
+app.get("/", function (req, res) {
+  res.sendFile(__dirname + "/public/index.html");
 });
+
+app.get("/game", middleware, (req, res) => {
+  verify(req.token)
+    .then((data) => {
+      app.use("/", express.static(path.join(__dirname, "public")));
+      res.sendFile(__dirname + "/public/game/index.html");
+    })
+    .catch((err) => {
+      if (err) {
+        res.sendStatus(403);
+      }
+    });
+});
+
+function middleware(req, res, next) {
+  const bearerHeader = req.headers["authorization"];
+  if (typeof bearerHeader !== "undefined") {
+    token = bearerHeader.split(" ")[1];
+    req.token = token;
+    next();
+  } else {
+    res.sendStatus(403);
+  }
+}
 
 io.on("connection", (socket) => {
   let person = new Person(socket.id);
   connected.push(person);
 
   socket.emit("welcome", person);
+
+  socket.on("setInfo", (req) => {
+    for (let i = 0; i < connected.length; i++) {
+      if (connected[i].socketId == req.socketId) {
+        connected[i].authinticated = true;
+        connected[i].email = req.email;
+        connected[i].name = req.name;
+        connected[i].imageUrl = req.imageUrl;
+      }
+    }
+  });
   socket.on("test", (data) => {});
 
   socket.on("toSearchingMode", (socketId) => {
@@ -66,6 +99,16 @@ io.on("connection", (socket) => {
     }
   });
 
+  socket.on("toIdleMode", (socketId) => {
+    for (let i = 0; i < connected.length; i++) {
+      if (connected[i].socketId == socketId) {
+        connected[i].status = "idle";
+        // queue.push(connected[i]);
+        // findMatch();
+      }
+    }
+  });
+
   socket.on("matchMoves", (data) => {
     io.to(data.to).emit("matchMoves", data);
   });
@@ -74,6 +117,25 @@ io.on("connection", (socket) => {
     for (let i = 0; i < connected.length; i++) {
       if (connected[i].socketId == socket.id) {
         connected.splice(i, 1);
+      }
+    }
+
+    for (let m of matches) {
+      if (m.p1.socketId == socket.id) {
+        matches.splice(matches.indexOf(m), 1);
+        io.to(m.p2.socketId).emit("matchMoves", {
+          type: "disconnect",
+          name: m.p1.name,
+          msg: "Your opponent has disconnected.",
+        });
+      }
+      if (m.p2.socketId == socket.id) {
+        matches.splice(matches.indexOf(m), 1);
+        io.to(m.p1.socketId).emit("matchMoves", {
+          type: "disconnect",
+          name: m.p2.name,
+          msg: "Your opponent has disconnected.",
+        });
       }
     }
   });
@@ -105,14 +167,6 @@ function findMatch() {
   }
 }
 
-// setInterval(() => {
-//   for (let p of matches) {
-//     console.log(p);
-//   }
-//   //   io.emit("test", connected);
-//   console.log("_____________________________________________");
-// }, 3000);
-
 // google verification for web app
 
 const { OAuth2Client } = require("google-auth-library");
@@ -130,15 +184,7 @@ async function verify(token) {
   const userid = payload["sub"];
 }
 
-app.post("/auth", (req, res) => {
-  verify(req.body.id_token).catch(console.error);
-  for (let i = 0; i < connected.length; i++) {
-    if (connected[i].socketId == req.body.socketId) {
-      connected[i].authinticated = true;
-      connected[i].email = req.body.email;
-      connected[i].name = req.body.name;
-      connected[i].imageUrl = req.body.imageUrl;
-    }
-  }
-  res.end();
-});
+setInterval(() => {
+  console.log(queue);
+  console.log("________________________________");
+}, 1000);

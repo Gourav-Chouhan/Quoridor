@@ -181,6 +181,9 @@ class Grid {
         minPlace = this.dots[i];
       }
     }
+    if (minDist > 1.5 * bw) {
+      return null;
+    }
     return minPlace;
   }
 
@@ -299,12 +302,9 @@ function fireThatFunc() {
 }
 
 function isLegalRec(tempGrid, cloc, destination) {
-  console.log(cloc);
   let { x, y } = cloc;
-  // console.log("line 303", x, y);
   visited[y][x] = true;
   if (y == destination) {
-    console.log("returning true");
     return true;
   }
   let a = false;
@@ -324,7 +324,6 @@ function isLegalRec(tempGrid, cloc, destination) {
     d = isLegalRec(tempGrid, { x, y: y + 2 }, destination);
   }
 
-  console.log("returning false");
   return a || b || c || d;
 }
 
@@ -344,18 +343,20 @@ function checkWinYou() {
   let res = false;
   if (isWhite) {
     if (yourLoc.y == 0) {
-      alert("you won");
+      console.log("You win");
       res = true;
     }
   } else {
     if (yourLoc.y == gridSize - 1) {
-      alert("you won");
+      showPopUp("You Won");
       res = true;
     }
   }
   if (res) {
+    playing = false;
     socket.emit("matchMoves", {
-      type: "matchOver",
+      type: "disconnect",
+      msg: "You Loose!",
       to: match.p2.socketId,
     });
   }

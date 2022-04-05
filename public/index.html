@@ -4,61 +4,89 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="style.css" />
     <meta
       name="google-signin-client_id"
       content="1023157306896-gf853hu70rsca3vktm2hdpjldcfucoep.apps.googleusercontent.com"
     />
-    <title>Quoridor</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap");
+
+      * {
+        margin: 0;
+        padding: 0;
+        user-select: none;
+        font-family: "Luckiest Guy", cursive;
+      }
+
+      html,
+      body {
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #eeeed2;
+      }
+      .card {
+        width: clamp(300px, 50vw, 500px);
+        margin-bottom: 20px;
+        box-shadow: 0 14px 16px 0 rgba(0, 0, 0, 0.329);
+        border-radius: 8px;
+        background-color: #769656;
+        display: flex;
+        justify-content: space-around;
+        flex-direction: column;
+        align-items: center;
+        color: white;
+        height: 60%;
+      }
+    </style>
+
+    <title>Quoridor Login Page</title>
   </head>
   <body>
-    <!-- login page -->
-
-    <div class="login-page" id="login-page">
-      <div class="container">
-        <div>
-          <h2>Welcome to</h2>
-          <h1>Quoridor</h1>
-        </div>
-        <div class="g-signin2" data-onsuccess="onSignIn"></div>
+    <div class="card login-page" id="login-page">
+      <div>
+        <h2>Welcome to</h2>
+        <h1>Quoridor</h1>
       </div>
+      <div class="g-signin2" data-onsuccess="onSignIn"></div>
     </div>
 
-    <!-- _____________________________________________ -->
-
-    <!-- menu-page -->
-    <div class="menu">
-      <h2>Hello <span id="usrName"></span></h2>
-      <h3>Welcome</h3>
-      <h3>To</h3>
-      <h1>Quoridor</h1>
-      <div class="test-div"><button id="findRandom">Find Random</button></div>
-    </div>
-
-    <!-- _______________________________________________ -->
-
-    <div class="container">
-      <div class="forOpponent player-name" id="forOpponent"></div>
-      <div class="forCanvas" id="canvas-container"></div>
-      <div class="forYou player-name" id="forYou"></div>
-
-      <div class="forSelection">
-        <div id="yourTurn">Waiting</div>
-        <button onclick="toHbarMode()" id="hbar">Hbar</button>
-        <button onclick="toMoveMode()" id="move">Move</button>
-        <button onclick="toVbarMode()" id="vbar">Vbar</button>
-      </div>
-    </div>
-
-    <!-- _____________________________________________ -->
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script> -->
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/addons/p5.sound.min.js"></script> -->
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="p5.min.js"></script>
-    <script src="routing.js"></script>
-    <script src="piece.js"></script>
-    <script src="main.js"></script>
     <script src="https://apis.google.com/js/platform.js" async defer></script>
-    <script src="auth.js"></script>
+    <script>
+      let userProfile = {};
+      function onSignIn(googleUser) {
+        userProfile.id_token = googleUser.getAuthResponse().id_token;
+        userProfile.name = googleUser.getBasicProfile().getName();
+        userProfile.email = googleUser.getBasicProfile().getEmail();
+        userProfile.imageUrl = googleUser.getBasicProfile().getImageUrl();
+        urs = googleUser;
+        var profile = googleUser.getBasicProfile();
+        console.log("authenticated");
+        fetch("/game", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            Authorization: "Bearer " + userProfile.id_token,
+          },
+        }).then((d) => {
+          if (d.status == 200) {
+            console.log("success");
+            d.body
+              .getReader()
+              .read()
+              .then((d) => {
+                localStorage.setItem(
+                  "userProfile",
+                  JSON.stringify(userProfile)
+                );
+                window.location.href = "./game/index.html";
+              });
+          }
+        });
+      }
+    </script>
   </body>
 </html>
