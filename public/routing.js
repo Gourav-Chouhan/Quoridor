@@ -8,6 +8,7 @@ const rows = 5;
 const pl = rows - 1;
 const gridSize = rows * 2 - 1;
 let allSet = false;
+let playing = false;
 
 let yourLoc = {};
 let opponentLoc = {};

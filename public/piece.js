@@ -339,3 +339,26 @@ function isLegal(cloc, destination) {
 
   return isLegalRec(tempGrid, cloc, destination);
 }
+
+function checkWinYou() {
+  let res = false;
+  if (isWhite) {
+    if (yourLoc.y == 0) {
+      alert("you won");
+      res = true;
+    }
+  } else {
+    if (yourLoc.y == gridSize - 1) {
+      alert("you won");
+      res = true;
+    }
+  }
+  if (res) {
+    socket.emit("matchMoves", {
+      type: "matchOver",
+      to: match.p2.socketId,
+    });
+  }
+
+  return res;
+}

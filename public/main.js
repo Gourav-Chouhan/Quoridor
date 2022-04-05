@@ -51,8 +51,11 @@ function draw() {
   } else {
     document.getElementById("yourTurn").textContent = "Opponent's Turn";
   }
-  allSet ? drawPiece() : null;
-  // Place.drawPiece();
+  if (allSet) {
+    drawPiece();
+    checkWinYou();
+    // checkWinOpp();
+  }
 }
 
 function togglePlayer() {
@@ -159,6 +162,8 @@ socket.on("matchMoves", (data) => {
     };
     g.grid[data.prevLocation.y][data.prevLocation.x].hasPiece = false;
     g.grid[data.newLocation.y][data.newLocation.x].hasPiece = true;
+  } else if (data.type == "matchOver") {
+    alert("You Loose");
   }
   g.getLegalPlaces();
   turn = true;
