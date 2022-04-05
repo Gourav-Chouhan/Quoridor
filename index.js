@@ -6,6 +6,7 @@ const server = http.createServer(app);
 const { Server } = require("socket.io");
 const io = new Server(server);
 app.use(express.json());
+const port = process.env.PORT;
 
 // const User = require("./model/user");
 
@@ -141,8 +142,8 @@ io.on("connection", (socket) => {
   });
 });
 
-server.listen(3000, () => {
-  console.log("listening on *:3000");
+server.listen(port, () => {
+  console.log("listening on *: " + port);
 });
 
 function findMatch() {
@@ -184,7 +185,7 @@ async function verify(token) {
   const userid = payload["sub"];
 }
 
-setInterval(() => {
-  console.log(queue);
-  console.log("________________________________");
-}, 1000);
+// setInterval(() => {
+//   console.log(queue);
+//   console.log("________________________________");
+// }, 1000);
