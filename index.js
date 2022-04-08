@@ -7,13 +7,8 @@ const { Server } = require("socket.io");
 const io = new Server(server);
 app.use(express.json());
 const port = process.env.PORT;
+const CircularJSON = require('circular-json');
 
-// const User = require("./model/user");
-
-// mongoose.connect("mongodb://localhost:27017/login-app-db", {
-//   useNewUrlPasrer: true,
-//   useUnifiedTopology: true,
-// });
 
 let connected = [];
 let queue = [];
@@ -64,7 +59,7 @@ app.get("/game", middleware, (req, res) => {
 function middleware(req, res, next) {
   const bearerHeader = req.headers["authorization"];
   if (typeof bearerHeader !== "undefined") {
-    token = bearerHeader.split(" ")[1];
+    let token = bearerHeader.split(" ")[1];
     req.token = token;
     next();
   } else {
@@ -89,6 +84,21 @@ io.on("connection", (socket) => {
     }
   });
   socket.on("test", (data) => {});
+  
+  function sendData(){
+    for(let i=0;i<connected.length;i++){
+      delete connected[i].matched
+    }
+    socket.emit('takeOnlineInfo', connected);
+    // for(let p of connected){
+    //   console.log(p)
+    //   console.log("_______________________________")
+    // }
+  }
+  
+  socket.on('getOnlineInfo', data => {
+    sendData();
+  })
 
   socket.on("toSearchingMode", (socketId) => {
     for (let i = 0; i < connected.length; i++) {
@@ -120,6 +130,12 @@ io.on("connection", (socket) => {
         connected.splice(i, 1);
       }
     }
+    
+    for (let i = 0; i < queue.length; i++) {
+      if (queue[i].socketId == socket.id) {
+        queue.splice(i, 1);
+      }
+    }
 
     for (let m of matches) {
       if (m.p1.socketId == socket.id) {
@@ -142,8 +158,8 @@ io.on("connection", (socket) => {
   });
 });
 
-server.listen(port, () => {
-  console.log("listening on *: " + port);
+server.listen(3000, () => {
+  console.log("listening on *: " + 3000);
 });
 
 function findMatch() {
@@ -171,7 +187,7 @@ function findMatch() {
 // google verification for web app
 
 const { OAuth2Client } = require("google-auth-library");
-const { default: mongoose } = require("mongoose");
+// const { default: mongoose } = require("mongoose");
 const client = new OAuth2Client(
   "1023157306896-gf853hu70rsca3vktm2hdpjldcfucoep.apps.googleusercontent.com"
 );
@@ -189,3 +205,20 @@ async function verify(token) {
 //   console.log(queue);
 //   console.log("________________________________");
 // }, 1000);
+
+
+// second update
+
+
+// app.get("/getOnlineInfo", (req, res) => {
+  
+//   let temp = [];
+  
+//   for(let i=0;i<connected.length;i++){
+//     temp[i] = JSON.parse(JSON.stringify(connected[i]));
+//     temp[i].email = null;
+//   }
+//   console.log('got a req')
+//   // let temp = CircularJSON.stringify(connected);
+//   res.send(temp);
+// });

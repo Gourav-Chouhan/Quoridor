@@ -1,3 +1,5 @@
+// var interval = setInterval(function() { if(document. readyState === 'complete') { clearInterval(interval); document.getElementById("findRandom").style.display = "block"} }, 100);
+
 let socket = io();
 let userProfile = JSON.parse(localStorage.getItem("userProfile"));
 document.getElementById("usrName").textContent = userProfile.name.split(" ")[0];
@@ -18,8 +20,11 @@ let opponentLoc = {};
 let searchingAnimation;
 
 document.getElementById("findRandom").addEventListener("click", (e) => {
+  clickSound.play();
   socket.emit("toSearchingMode", socketId);
+    document.body.requestFullscreen();
   e.target.textContent = "Seacrhing...";
+  e.target.disabled = "true";
   searching = true;
   searchingAnimation = setInterval(() => {
     let elm = document.getElementById("findRandom");
@@ -39,6 +44,10 @@ socket.on("welcome", (data) => {
   socketId = data.socketId;
   userProfile.socketId = data.socketId;
   socket.emit("setInfo", userProfile);
+  setTimeout(() => {
+    document.getElementById("loadingScreen").style.display = "none"
+  document.getElementById("findRandom").style.display = "block"
+  }, 1000)
 });
 
 let arr = [];
@@ -52,10 +61,32 @@ socket.on("matched", (data) => {
   playing = true;
   clearInterval(searchingAnimation);
   document.getElementById("findRandom").textContent = "Match Found";
+  matchFoundSound.play()
+  document.getElementById("match-found-pop-up").style.display = "flex";
+
+    setTimeout(() => {
+  document.getElementById("startingTimer").textContent = "3";
+  }, 0);
+  
   setTimeout(() => {
+  document.getElementById("startingTimer").textContent = "2";
+  }, 1000);
+  
+  setTimeout(() => {
+  document.getElementById("startingTimer").textContent = "1";
+  }, 2000);
+  
+  
+  
+  setTimeout(() => {
+  document.getElementById("startingTimer").textContent = "0";
+    
+  document.getElementById("match-found-pop-up").style.display = "none";
+    
     document.getElementById("menu").style.display = "none";
     document.getElementById("container").style.display = "flex";
-  }, 300);
+    
+  }, 3000);
   match = data;
 
   let myNode = document.getElementById("forOpponent");
@@ -96,7 +127,7 @@ socket.on("matched", (data) => {
     document.getElementById("forYou").appendChild(imgdiv1);
     document.getElementById("forYou").appendChild(yourCircle);
     document.getElementById("forYou").appendChild(namediv1);
-    alert(`you have been matched to ${data.p2.name} and its your turn`);
+    // alert(`you have been matched to ${data.p2.name} and its your turn`);
   } else {
     document.getElementById("canvas-container").style.transform =
       "rotate(180deg)";
@@ -112,7 +143,7 @@ socket.on("matched", (data) => {
     document.getElementById("forYou").appendChild(imgdiv1);
     document.getElementById("forYou").appendChild(yourCircle);
     document.getElementById("forYou").appendChild(namediv1);
-    alert(`You have been matched to ${data.p2.name} and its opponent turn`);
+    // alert(`You have been matched to ${data.p2.name} and its opponent turn`);
   }
 
   setTimeout(() => {

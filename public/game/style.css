@@ -134,6 +134,30 @@ button {
 
 #yourTurn {
   color: white;
+  margin: 30px;
+  font-size: 24px;
+}
+
+@keyframes animate {
+  0,100% {
+    transform: scale(1) rotate(0deg);
+  }
+  33%{
+    transform: scale(1.3) rotate(7deg);
+    color: lightgreen;
+  }
+  
+  50%{
+    transform: scale(1) rotate(0deg);
+    color: green;
+    
+  }
+  
+  67%{
+    transform: scale(1.3) rotate(-7deg);
+    color: lightgreen;
+  }
+  
 }
 
 .card {
@@ -157,17 +181,19 @@ button {
   border: 2px solid #eeeed2;
 }
 
+
 .pop-up {
   position: absolute;
   display: none;
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  background: #769656;
+  background: rgba(245, 245, 245, 0.322);
+  backdrop-filter: blur(10px);
   border: 1px solid #eeeed2;
   box-shadow: 0 0 20px #eeeed2;
-  width: 20ch;
-  height: 20ch;
+  width: 30ch;
+  height: 30ch;
   border-radius: 35px;
   padding: 10px;
   margin: 10px;
@@ -176,8 +202,13 @@ button {
 
 .pop-up p {
   padding: 10px;
-  color: white;
+  color: #295200;
 }
+
+#startingTimer{
+  font-size: 60px;
+}
+
 
 #pop-up-button {
   color: white;
@@ -187,4 +218,132 @@ button {
   margin-left: auto;
   margin-right: auto;
   bottom: 1ch;
+}
+
+
+/* second update */
+
+
+.glass {
+  display: none;
+  /* justify-content: center; */
+  align-items: center;
+  flex-direction: column;
+  background: rgba(255, 255, 255, 0.541);
+  /* background: rgba(255, 0, 0, 0.13); */
+  border-radius: 20px;
+  backdrop-filter: blur(15px);
+  width: clamp(300px, 60vw, 500px);
+  max-height: 60vh;
+  height: 60vh;
+  padding: 1rem;
+  position: absolute;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.glass .people {
+  /* backdrop-filter: blur(10px); */
+
+  width: 92%;
+  border: 1px white solid;
+  display: grid;
+  grid: 4ch / 4ch auto 4ch 4ch;
+  border-radius: 1rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.37);
+  margin: 0.3rem;
+  /* drop shadow */
+  box-shadow: 0 0 14px grey;
+}
+
+.challenge-friend,
+.dp,
+.add-friend {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  /* border: 1px yellow solid; */
+  padding: 10px;
+}
+
+.dp img {
+  height: 5ch;
+  border-radius: 50%;
+}
+
+.name-div {
+  padding: 5px;
+  margin: 4px;
+}
+
+.glass .people div .people-name {
+  font-size: 1.1rem;
+  color: #769656;
+  margin-bottom: 4px;
+  margin-top: -5px;
+}
+
+.glass .people div .people-status {
+  font-size: 0.7rem;
+  color: black;
+}
+
+::-webkit-scrollbar {
+  width: 0px;
+}
+
+.show-onlines {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: white;
+  border-radius: 50%;
+  position: absolute;
+  left: 0.8rem;
+  top: 0.8rem;
+  width: 5ch;
+  height: 5ch;
+}
+
+
+
+.loading-screen {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  background: rgba(255, 255, 255, 0.541);
+  backdrop-filter: blur(15px);
+  width: 100vw;
+  height: 100vh;
+  padding: 1rem;
+  position: absolute;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.loading-animation {
+  margin-top: 20px;
+  position: relative;
+  /* transform: translateX(-100%); */
+  border-radius: 10px;
+  height: 5px;
+  width: 100px;
+  background: black;
+  animation: animate infinite 1.5s ease-in-out alternate;
+}
+
+@keyframes animate {
+  0%,
+  100% {
+    transform: translateX(0) scaleX(0);
+  }
+  33% {
+    transform: translateX(-50%) scaleX(1) rotate(15deg);
+  }
+  66% {
+    transform: translateX(50%) scaleX(1) rotate(-15deg);
+  }
 }

@@ -4,7 +4,12 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="style.css" />
+    
 
     <title>Quoridor</title>
   </head>
@@ -12,9 +17,23 @@
     <!-- _____________________________________________ -->
 
     <!-- menu-page -->
-
+    <div style="color: white; font-size: 40px; margin-top: 60px">
+      Quoridor
+    </div>
+    <div class="pop-up" id="match-found-pop-up">
+      <h1>
+        Match Found
+          </h1>
+      <h2>
+        Match Starting in:
+      </h2>
+      <div id="startingTimer">
+        
+      </div>
+    </div>
+    
     <div class="pop-up" id="pop-up">
-      <p id="pop-up-message">
+      <p class="pop-up-message" id="pop-up-message">
         
       </p>
       <button id="pop-up-button" onclick="backToHome()">Home</button>
@@ -28,7 +47,7 @@
         <h3>Welcome to</h3>
         <h1>Quoridor</h1>
       </div>
-      <div class="test-div"><button id="findRandom">Find Random</button></div>
+      <div class="test-div"><button id="findRandom" style="display:none">Find Random</button></div>
     </div>
 
     <!-- _______________________________________________ -->
@@ -37,9 +56,9 @@
       <div class="forOpponent player-name" id="forOpponent"></div>
       <div class="forCanvas" id="canvas-container"></div>
       <div class="forYou player-name" id="forYou"></div>
+        <div class="player-name"  id="yourTurn">Waiting</div>
 
       <div class="forSelection">
-        <div id="yourTurn">Waiting</div>
         <button onclick="toHbarMode()" id="hbar">Hbar</button>
         <button onclick="toMoveMode()" id="move">Move</button>
         <button onclick="toVbarMode()" id="vbar">Vbar</button>
@@ -47,12 +66,70 @@
     </div>
 
     <!-- _____________________________________________ -->
+    
+<!--     second update -->
+    
+    <div class="show-onlines" onclick="getOnlineInfo()">
+      <span class="material-icons">&#xea21;</span>
+    </div>
 
+    <div class="glass" id="onlinePeople">
+      <div
+        class="people"
+        style="
+          background-color: white;
+          width: 100%;
+          border-radius: 0;
+          margin-top: -5px;
+          font-size: larger;
+        "
+      >
+        <div class="dp"><span class="material-icons">&#xE87C;</span></div>
+        <div class="name-div">
+          <div
+            class="people-name"
+            style="color: darkgreen; font-weight: bolder; margin-top: 0.4rem;"
+          >
+            Online Peoples
+          </div>
+        </div>
+        <div class="add-friend">
+          <span class="material-icons" onClick="getOnlineInfo()">
+            &#xe5d5;
+          </span>
+        </div>
+        <div class="challenge-friend">
+          <span class="material-icons" onClick="closeOnlineInfo()">
+            &#xe5cd;
+          </span>
+        </div>
+      </div>
+    </div>
+
+    
+<!--     till here -->
+    
+<!-- loading animation     -->
+    
+    
+    <div class="loading-screen" id="loadingScreen">
+      <div class="loading-text">
+        <span class="material-icons">&#xea1f;</span>
+        <span>Loading...</span>
+      </div>
+
+      <div class="loading-animation">
+        <div class="bar"></div>
+    </div>
+
+    
+<!-- till here -->
     <script src="/socket.io/socket.io.js"></script>
     <script src="p5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.1/addons/p5.sound.js" integrity="sha512-U2sgwrFhl+Tgx9iGH9h5Ba2WyIjyCes+D0prtIFw3a0V+/fkaeL5Cd/VjyPHno9kUPE1rnNhBGTyvtZsfJp0xg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="routing.js"></script>
     <script src="piece.js"></script>
     <script src="main.js"></script>
-    <!-- <script src="auth.js"></script> -->
+    <script src="person.js"></script>
   </body>
 </html>
