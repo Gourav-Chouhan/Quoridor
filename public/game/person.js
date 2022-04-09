@@ -86,6 +86,7 @@ function closeOnlineInfo() {
 //working over this
 
 function getRequestInfo() {
+	document.getElementById("showRequest").style.animation = "null";
 	onlinePeopleParent.style.display = "none";
 	incomingRequestParent.style.display = "flex";
 	console.log(incomingRequestParent);
@@ -160,6 +161,8 @@ socket.on("receiveMatchRequest", (data) => {
 			return;
 		}
 	}
+	document.getElementById("showRequest").style.animation =
+		"gotRequestAnimation 1s infinite ease-in";
 	addIncomingToList(data);
 });
 
