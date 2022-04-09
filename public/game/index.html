@@ -14,6 +14,38 @@
     <title>Quoridor</title>
   </head>
   <body>
+
+    <!-- working on game request -->
+
+<div class="glass" id="incomingRequests">
+      <div
+        class="people"
+        style="
+          background-color: white;
+          width: 100%;
+          border-radius: 0;
+          margin-top: -5px;
+          font-size: larger;
+          grid: 4ch / 4ch auto 4ch;
+        "
+      >
+        <div class="dp"><span class="material-icons">&#xf07e;</span></div>
+        <div class="name-div">
+          <div
+            class="people-name"
+            style="color: darkgreen; font-weight: bolder; margin-top: 0.4rem;"
+          >
+            Incoming Requests
+          </div>
+        </div>
+        <div class="challenge-friend">
+          <span class="material-icons" onClick="closeIncomingRequests()">
+            &#xe5cd;
+          </span>
+        </div>
+      </div>
+    </div>
+<!-- till here -->
     <!-- _____________________________________________ -->
 
     <!-- menu-page -->
@@ -73,6 +105,11 @@
       <span class="material-icons">&#xea21;</span>
     </div>
 
+    <div class="show-request" id="showRequest" onclick="getRequestInfo()">
+      <span class="material-icons">&#xf07e;</span>
+    </div>
+    
+
     <div class="glass" id="onlinePeople">
       <div
         class="people"
@@ -124,6 +161,8 @@
 
     
 <!-- till here -->
+
+
     <script src="/socket.io/socket.io.js"></script>
     <script src="p5.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.1/addons/p5.sound.js" integrity="sha512-U2sgwrFhl+Tgx9iGH9h5Ba2WyIjyCes+D0prtIFw3a0V+/fkaeL5Cd/VjyPHno9kUPE1rnNhBGTyvtZsfJp0xg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>

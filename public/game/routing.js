@@ -22,7 +22,7 @@ let searchingAnimation;
 document.getElementById("findRandom").addEventListener("click", (e) => {
   clickSound.play();
   socket.emit("toSearchingMode", socketId);
-    document.body.requestFullscreen();
+  // document.body.requestFullscreen();
   e.target.textContent = "Seacrhing...";
   e.target.disabled = "true";
   searching = true;
@@ -45,9 +45,9 @@ socket.on("welcome", (data) => {
   userProfile.socketId = data.socketId;
   socket.emit("setInfo", userProfile);
   setTimeout(() => {
-    document.getElementById("loadingScreen").style.display = "none"
-  document.getElementById("findRandom").style.display = "block"
-  }, 1000)
+    document.getElementById("loadingScreen").style.display = "none";
+    document.getElementById("findRandom").style.display = "block";
+  }, 1000);
 });
 
 let arr = [];
@@ -60,32 +60,30 @@ socket.on("matched", (data) => {
   searching = false;
   playing = true;
   clearInterval(searchingAnimation);
+  closePopAllPopUps();
   document.getElementById("findRandom").textContent = "Match Found";
-  matchFoundSound.play()
+  matchFoundSound.play();
   document.getElementById("match-found-pop-up").style.display = "flex";
 
-    setTimeout(() => {
-  document.getElementById("startingTimer").textContent = "3";
+  setTimeout(() => {
+    document.getElementById("startingTimer").textContent = "3";
   }, 0);
-  
+
   setTimeout(() => {
-  document.getElementById("startingTimer").textContent = "2";
+    document.getElementById("startingTimer").textContent = "2";
   }, 1000);
-  
+
   setTimeout(() => {
-  document.getElementById("startingTimer").textContent = "1";
+    document.getElementById("startingTimer").textContent = "1";
   }, 2000);
-  
-  
-  
+
   setTimeout(() => {
-  document.getElementById("startingTimer").textContent = "0";
-    
-  document.getElementById("match-found-pop-up").style.display = "none";
-    
+    document.getElementById("startingTimer").textContent = "0";
+
+    document.getElementById("match-found-pop-up").style.display = "none";
+
     document.getElementById("menu").style.display = "none";
     document.getElementById("container").style.display = "flex";
-    
   }, 3000);
   match = data;
 
