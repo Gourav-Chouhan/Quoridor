@@ -20,159 +20,161 @@ let opponentLoc = {};
 let searchingAnimation;
 
 document.getElementById("findRandom").addEventListener("click", (e) => {
-  clickSound.play();
-  socket.emit("toSearchingMode", socketId);
-  // document.body.requestFullscreen();
-  e.target.textContent = "Seacrhing...";
-  e.target.disabled = "true";
-  searching = true;
-  searchingAnimation = setInterval(() => {
-    let elm = document.getElementById("findRandom");
-    elm.textContent = "Seacrhing" + dotString.substring(0, dots);
-    dots++;
-    if (dots > 4) {
-      dots = 0;
-    }
-  }, 300);
+	clickSound.play();
+	socket.emit("toSearchingMode", socketId);
+	// document.body.requestFullscreen();
+	e.target.textContent = "Seacrhing...";
+	e.target.disabled = "true";
+	searching = true;
+	searchingAnimation = setInterval(() => {
+		let elm = document.getElementById("findRandom");
+		elm.textContent = "Seacrhing" + dotString.substring(0, dots);
+		dots++;
+		if (dots > 4) {
+			dots = 0;
+		}
+	}, 300);
 });
 
 let socketId;
 let you;
 
 socket.on("welcome", (data) => {
-  you = data;
-  socketId = data.socketId;
-  userProfile.socketId = data.socketId;
-  socket.emit("setInfo", userProfile);
-  setTimeout(() => {
-    document.getElementById("loadingScreen").style.display = "none";
-    document.getElementById("findRandom").style.display = "block";
-  }, 1000);
+	you = data;
+	socketId = data.socketId;
+	userProfile.socketId = data.socketId;
+	socket.emit("setInfo", userProfile);
+	setTimeout(() => {
+		document.getElementById("loadingScreen").style.display = "none";
+		document.getElementById("findRandom").style.display = "block";
+	}, 1000);
 });
 
 let arr = [];
 
 socket.on("test", (data) => {
-  arr = data;
+	arr = data;
 });
 
 socket.on("matched", (data) => {
-  searching = false;
-  playing = true;
-  clearInterval(searchingAnimation);
-  closePopAllPopUps();
-  document.getElementById("findRandom").textContent = "Match Found";
-  matchFoundSound.play();
-  document.getElementById("match-found-pop-up").style.display = "flex";
+	searching = false;
+	playing = true;
+	clearInterval(searchingAnimation);
+	document.getElementById("showRequest").style.display = "none";
+	document.getElementById("openMessagePannel").style.display = "flex";
 
-  setTimeout(() => {
-    document.getElementById("startingTimer").textContent = "3";
-  }, 0);
+	document.getElementById("findRandom").textContent = "Match Found";
+	matchFoundSound.play();
+	document.getElementById("match-found-pop-up").style.display = "flex";
 
-  setTimeout(() => {
-    document.getElementById("startingTimer").textContent = "2";
-  }, 1000);
+	setTimeout(() => {
+		document.getElementById("startingTimer").textContent = "3";
+	}, 0);
 
-  setTimeout(() => {
-    document.getElementById("startingTimer").textContent = "1";
-  }, 2000);
+	setTimeout(() => {
+		document.getElementById("startingTimer").textContent = "2";
+	}, 1000);
 
-  setTimeout(() => {
-    document.getElementById("startingTimer").textContent = "0";
+	setTimeout(() => {
+		document.getElementById("startingTimer").textContent = "1";
+	}, 2000);
 
-    document.getElementById("match-found-pop-up").style.display = "none";
+	setTimeout(() => {
+		document.getElementById("startingTimer").textContent = "0";
 
-    document.getElementById("menu").style.display = "none";
-    document.getElementById("container").style.display = "flex";
-  }, 3000);
-  match = data;
+		document.getElementById("match-found-pop-up").style.display = "none";
 
-  let myNode = document.getElementById("forOpponent");
-  while (myNode.firstChild) {
-    myNode.removeChild(myNode.lastChild);
-  }
-  let myNode2 = document.getElementById("forYou");
-  while (myNode2.firstChild) {
-    myNode2.removeChild(myNode2.lastChild);
-  }
+		document.getElementById("menu").style.display = "none";
+		document.getElementById("container").style.display = "flex";
+	}, 3000);
+	match = data;
 
-  opponent = data.p2.name;
-  let namediv1 = document.createElement("div");
-  namediv1.innerText = data.p1.name;
-  let imgdiv1 = document.createElement("img");
-  imgdiv1.src = data.p1.imageUrl;
-  imgdiv1.crossOrigin = "Anonymous";
-  let namediv2 = document.createElement("div");
-  namediv2.innerText = data.p2.name;
-  let imgdiv2 = document.createElement("img");
-  imgdiv2.src = data.p2.imageUrl;
-  imgdiv2.crossOrigin = "Anonymous";
-  let yourCircle = document.createElement("div");
-  let opponentCircle = document.createElement("div");
-  yourCircle.className = "circle";
-  opponentCircle.className = "circle";
+	let myNode = document.getElementById("forOpponent");
+	while (myNode.firstChild) {
+		myNode.removeChild(myNode.lastChild);
+	}
+	let myNode2 = document.getElementById("forYou");
+	while (myNode2.firstChild) {
+		myNode2.removeChild(myNode2.lastChild);
+	}
 
-  if (socketId == data.p1.socketId && data.p1.turn) {
-    turn = true;
-    isWhite = true;
-    allSet = true;
-    yourCircle.style.backgroundColor = "white";
-    opponentCircle.style.backgroundColor = "black";
+	opponent = data.p2.name;
+	let namediv1 = document.createElement("div");
+	namediv1.innerText = data.p1.name;
+	let imgdiv1 = document.createElement("img");
+	imgdiv1.src = data.p1.imageUrl;
+	imgdiv1.crossOrigin = "Anonymous";
+	let namediv2 = document.createElement("div");
+	namediv2.innerText = data.p2.name;
+	let imgdiv2 = document.createElement("img");
+	imgdiv2.src = data.p2.imageUrl;
+	imgdiv2.crossOrigin = "Anonymous";
+	let yourCircle = document.createElement("div");
+	let opponentCircle = document.createElement("div");
+	yourCircle.className = "circle";
+	opponentCircle.className = "circle";
 
-    document.getElementById("forOpponent").appendChild(namediv2);
-    document.getElementById("forOpponent").appendChild(opponentCircle);
-    document.getElementById("forOpponent").appendChild(imgdiv2);
-    document.getElementById("forYou").appendChild(imgdiv1);
-    document.getElementById("forYou").appendChild(yourCircle);
-    document.getElementById("forYou").appendChild(namediv1);
-    // alert(`you have been matched to ${data.p2.name} and its your turn`);
-  } else {
-    document.getElementById("canvas-container").style.transform =
-      "rotate(180deg)";
-    isWhite = false;
-    turn = false;
-    allSet = true;
-    yourCircle.style.backgroundColor = "black";
-    opponentCircle.style.backgroundColor = "white";
+	if (socketId == data.p1.socketId && data.p1.turn) {
+		turn = true;
+		isWhite = true;
+		allSet = true;
+		yourCircle.style.backgroundColor = "white";
+		opponentCircle.style.backgroundColor = "black";
 
-    document.getElementById("forOpponent").appendChild(namediv2);
-    document.getElementById("forOpponent").appendChild(opponentCircle);
-    document.getElementById("forOpponent").appendChild(imgdiv2);
-    document.getElementById("forYou").appendChild(imgdiv1);
-    document.getElementById("forYou").appendChild(yourCircle);
-    document.getElementById("forYou").appendChild(namediv1);
-    // alert(`You have been matched to ${data.p2.name} and its opponent turn`);
-  }
+		document.getElementById("forOpponent").appendChild(namediv2);
+		document.getElementById("forOpponent").appendChild(opponentCircle);
+		document.getElementById("forOpponent").appendChild(imgdiv2);
+		document.getElementById("forYou").appendChild(imgdiv1);
+		document.getElementById("forYou").appendChild(yourCircle);
+		document.getElementById("forYou").appendChild(namediv1);
+		// alert(`you have been matched to ${data.p2.name} and its your turn`);
+	} else {
+		document.getElementById("canvas-container").style.transform =
+			"rotate(180deg)";
+		isWhite = false;
+		turn = false;
+		allSet = true;
+		yourCircle.style.backgroundColor = "black";
+		opponentCircle.style.backgroundColor = "white";
 
-  setTimeout(() => {
-    fireThatFunc();
-  }, 1000);
+		document.getElementById("forOpponent").appendChild(namediv2);
+		document.getElementById("forOpponent").appendChild(opponentCircle);
+		document.getElementById("forOpponent").appendChild(imgdiv2);
+		document.getElementById("forYou").appendChild(imgdiv1);
+		document.getElementById("forYou").appendChild(yourCircle);
+		document.getElementById("forYou").appendChild(namediv1);
+		// alert(`You have been matched to ${data.p2.name} and its opponent turn`);
+	}
 
-  if (isWhite) {
-    opponentLoc = {
-      x: pl,
-      y: 0,
-      color: "black",
-    };
-    yourLoc = {
-      x: pl,
-      y: gridSize - 1,
-      color: "white",
-    };
-  } else {
-    yourLoc = {
-      x: pl,
-      y: 0,
-      color: "black",
-    };
-    opponentLoc = {
-      x: pl,
-      y: gridSize - 1,
-      color: "white",
-    };
-  }
+	setTimeout(() => {
+		fireThatFunc();
+	}, 1000);
+
+	if (isWhite) {
+		opponentLoc = {
+			x: pl,
+			y: 0,
+			color: "black",
+		};
+		yourLoc = {
+			x: pl,
+			y: gridSize - 1,
+			color: "white",
+		};
+	} else {
+		yourLoc = {
+			x: pl,
+			y: 0,
+			color: "black",
+		};
+		opponentLoc = {
+			x: pl,
+			y: gridSize - 1,
+			color: "white",
+		};
+	}
 });
 
 socket.on("takeUsrInfo", (data) => {
-  document.getElementById("usrName").textContent = userProfile.name;
+	document.getElementById("usrName").textContent = userProfile.name;
 });

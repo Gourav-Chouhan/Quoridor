@@ -6,8 +6,7 @@ const server = http.createServer(app);
 const { Server } = require("socket.io");
 const io = new Server(server);
 app.use(express.json());
-const port = process.env.PORT;
-const CircularJSON = require("circular-json");
+const fs = require("fs");
 
 let connected = [];
 let queue = [];
@@ -69,7 +68,6 @@ function middleware(req, res, next) {
 io.on("connection", (socket) => {
 	let person = new Person(socket.id);
 	connected.push(person);
-
 	socket.emit("welcome", person);
 
 	socket.on("setInfo", (req) => {
@@ -79,6 +77,9 @@ io.on("connection", (socket) => {
 				connected[i].email = req.email;
 				connected[i].name = req.name;
 				connected[i].imageUrl = req.imageUrl;
+				// console.log(typeof req);
+				addPeople(req);
+				return;
 			}
 		}
 	});
@@ -130,12 +131,28 @@ io.on("connection", (socket) => {
 	});
 
 	socket.on("makeMatch", (data) => {
-		console.log(data);
 		makeMatch(data.player1, data.player2);
 	});
 
 	socket.on("matchMoves", (data) => {
 		io.to(data.to).emit("matchMoves", data);
+		if (data.type == "disconnect") {
+			for (let i = 0; i < matches.length; i++) {
+				if (
+					matches[i].p1.socketId == data.to ||
+					matches[i].p2.socketId == data.to
+				) {
+					if (matches[i].p1.socketId == data.to) {
+						addScore(matches[i].p1.email, false);
+						addScore(matches[i].p2.email, true);
+					} else {
+						addScore(matches[i].p2.email, false);
+						addScore(matches[i].p1.email, true);
+					}
+				}
+				matches.splice(i, 1);
+			}
+		}
 	});
 
 	socket.on("disconnect", () => {
@@ -154,6 +171,9 @@ io.on("connection", (socket) => {
 		for (let m of matches) {
 			if (m.p1.socketId == socket.id) {
 				matches.splice(matches.indexOf(m), 1);
+				addScore(m.p2.email, true);
+				addScore(m.p1.email, false);
+				// console.log(m.p1);
 				io.to(m.p2.socketId).emit("matchMoves", {
 					type: "disconnect",
 					name: m.p1.name,
@@ -162,6 +182,9 @@ io.on("connection", (socket) => {
 			}
 			if (m.p2.socketId == socket.id) {
 				matches.splice(matches.indexOf(m), 1);
+				// console.log(m.p2);
+				addScore(m.p2.email, false);
+				addScore(m.p1.email, true);
 				io.to(m.p1.socketId).emit("matchMoves", {
 					type: "disconnect",
 					name: m.p2.name,
@@ -199,7 +222,6 @@ function findMatch() {
 }
 
 function makeMatch(id1, id2) {
-	console.log("match has been maked");
 	let person1 = connected.find((elm) => elm.socketId == id1);
 	let person2 = connected.find((elm) => elm.socketId == id2);
 	let match = new Match(person1, person2);
@@ -215,12 +237,12 @@ function makeMatch(id1, id2) {
 			connected[i].status = "playing";
 			connected[i].matched = person1;
 		}
-  }
-  for (let i = queue.length-1; i >= 0; i--) {
-			if (queue[i].socketId == id1 || queue[i].socketId == id2) {
-				queue.splice(i, 1);
-			}
+	}
+	for (let i = queue.length - 1; i >= 0; i--) {
+		if (queue[i].socketId == id1 || queue[i].socketId == id2) {
+			queue.splice(i, 1);
 		}
+	}
 	matches.push(new Match(person1, person2));
 }
 
@@ -260,3 +282,52 @@ async function verify(token) {
 //   // let temp = CircularJSON.stringify(connected);
 //   res.send(temp);
 // });
+
+function addPeople(person) {
+	let res = fs.readFileSync("./database.db", { encoding: "utf8", flag: "r" });
+	res = JSON.parse(res);
+
+	if (
+		res.peoples.find((elm) => {
+			if (elm.email == person.email) {
+				return true;
+			}
+		}) == undefined
+	) {
+		res.peoples.push({
+			email: person.email,
+			name: person.name,
+			imageUrl: person.imageUrl,
+			wins: 0,
+			loose: 0,
+		});
+	}
+	fs.writeFileSync("./database.db", JSON.stringify(res));
+}
+
+function addScore(email, inc) {
+	let res = fs.readFileSync("./database.db", { encoding: "utf8", flag: "r" });
+	res = JSON.parse(res);
+
+	res.peoples.find((elm) => {
+		if (elm.email == email) {
+			if (inc) {
+				elm.wins++;
+			} else {
+				elm.loose++;
+			}
+			return true;
+		}
+	});
+
+	fs.writeFileSync("./database.db", JSON.stringify(res));
+}
+
+app.get("/getLeaderboard", (req, res) => {
+	let toSend = fs.readFileSync("./database.db", {
+		encoding: "utf8",
+		flag: "r",
+	});
+	toSend = JSON.parse(toSend);
+	res.send(toSend);
+});

@@ -228,11 +228,13 @@ socket.on("matchMoves", (data) => {
 		};
 		g.grid[data.prevLocation.y][data.prevLocation.x].hasPiece = false;
 		g.grid[data.newLocation.y][data.newLocation.x].hasPiece = true;
-	} else if (data.type == "matchOver") {
-		// alert("You Loose");
 	} else if (data.type == "disconnect") {
 		looseSound.play();
 		showPopUp(data.msg);
+	} else if (data.type == "chatMessage") {
+		console.log(data);
+		sendMessage(true, data.message);
+		return;
 	}
 	g.getLegalPlaces();
 	turn = true;

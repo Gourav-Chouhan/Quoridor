@@ -74,7 +74,8 @@ socket.on("takeOnlineInfo", (data) => {
 });
 
 function getOnlineInfo() {
-	incomingRequestParent.style.display = "none";
+	closePopAllPopUps();
+	// incomingRequestParent.style.display = "none";
 	onlinePeopleParent.style.display = "flex";
 	socket.emit("getOnlineInfo", {});
 }
@@ -94,6 +95,7 @@ function getRequestInfo() {
 
 function closeIncomingRequests() {
 	incomingRequestParent.style.display = "none";
+	document.getElementById("leaderboardDiv").style.display = "none";
 }
 
 function addIncomingToList(person) {
@@ -141,6 +143,51 @@ function addIncomingToList(person) {
 	incomingRequestParent.appendChild(people);
 }
 
+function addToLeaderboard(person) {
+	let people = document.createElement("div");
+	people.className = "people";
+	people.style.order = 100000 - 5 * person.wins + person.loose;
+	let dp = document.createElement("div");
+	dp.className = "dp";
+	let peopleName = document.createElement("div");
+	peopleName.className = "people-name";
+	let addFriend = document.createElement("div");
+	addFriend.className = "add-friend";
+	let challengeFriend = document.createElement("div");
+	challengeFriend.className = "challenge-friend";
+	let nameDiv = document.createElement("div");
+	nameDiv.className = "name-div";
+	nameDiv.style = `display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;`;
+	let frndIcon = document.createElement("span");
+	// frndIcon.className = "material-icons";
+	frndIcon.innerHTML = person.loose;
+	let challengeIcon = document.createElement("span");
+	// challengeIcon.className = "material-icons";
+	challengeIcon.innerHTML = person.wins;
+	let dpIcon = document.createElement("img");
+	dpIcon.crossOrigin = "Anonymous";
+	// dpIcon.className = "material-icons";
+	dpIcon.src = person.imageUrl;
+	peopleName.textContent = person.name;
+	addFriend.appendChild(frndIcon);
+	challengeFriend.appendChild(challengeIcon);
+	dp.appendChild(dpIcon);
+	nameDiv.appendChild(peopleName);
+	people.appendChild(dp);
+	people.appendChild(nameDiv);
+	addFriend.style.backgroundColor = "red";
+	addFriend.style.color = "white";
+	people.appendChild(addFriend);
+	challengeFriend.style.backgroundColor = "green";
+	challengeFriend.style.color = "white";
+	people.appendChild(challengeFriend);
+	// console.log(person);
+	document.getElementById("leaderboardDiv").appendChild(people);
+}
+
 // addIncomingToList({ name: "Gourav Chouhan" });
 
 function cancelMatchRequest(e) {
@@ -177,5 +224,72 @@ function acceptMatchRequest(e) {
 function closePopAllPopUps() {
 	onlinePeopleParent.style.display = "none";
 	incomingRequestParent.style.display = "none";
-	document.getElementById("showRequest").style.display = "none";
+	// document.getElementById("showRequest").style.display = "none";
+	document.getElementById("messages").style.display = "none";
 }
+
+document.getElementById("optionsToggler").addEventListener("click", (e) => {
+	e.target.parentElement.parentElement.classList.toggle("options-open");
+});
+
+let messageBox = document.getElementsByClassName("message-box")[0];
+let messageInput = document.getElementById("messageInput");
+
+messageInput.addEventListener("keyup", function (event) {
+	if (event.code === "Enter") {
+		sendMessage();
+	}
+});
+
+function sendMessage(leftMessage = false, messageData = null) {
+	if (!leftMessage && !messageInput.value) return;
+	let elm = document.createElement("div");
+	elm.classList.add("message");
+	if (leftMessage) {
+		elm.classList.add("left");
+		console.log("done");
+		elm.textContent = messageData;
+	} else {
+		elm.classList.add("right");
+		elm.textContent = messageInput.value;
+	}
+	messageBox.appendChild(elm);
+	messageBox.scrollBy(0, messageBox.scrollHeight);
+	if (leftMessage) return;
+	socket.emit("matchMoves", {
+		type: "chatMessage",
+		to: match.p2.socketId,
+		message: messageInput.value,
+	});
+	messageInput.value = "";
+}
+
+document.getElementById("openMessagePannel").style.display = "none";
+
+document.getElementById("openMessagePannel").addEventListener("click", (e) => {
+	closePopAllPopUps();
+	document.getElementById("messages").style.display = "flex";
+});
+
+document.getElementById("openLeaderboard").addEventListener("click", () => {
+	closePopAllPopUps();
+	document.getElementById("leaderboardDiv").style.display = "flex";
+	fetch("/getLeaderboard", {
+		method: "GET",
+		headers: {
+			"Content-Type": "application/json",
+		},
+	})
+		.then((data) => data.json())
+		.then((data) => {
+			while (document.getElementById("leaderboardDiv").childElementCount > 1) {
+				document
+					.getElementById("leaderboardDiv")
+					.removeChild(document.getElementById("leaderboardDiv").lastChild);
+			}
+
+			data.peoples.forEach((elm) => {
+				addToLeaderboard(elm);
+			});
+		});
+});
