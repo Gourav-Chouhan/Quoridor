@@ -30,17 +30,16 @@ body {
 	/* color: #ff8cb8; */
 }
 
-button {
-	background: #ff8cb8;
+#findRandom {
+	background: #e08a00;
 	border: none;
 	border-radius: 5px;
-	color: black;
 	font-size: 1.5rem;
 	padding: 0.5rem 1rem;
 	cursor: pointer;
 	transition: all 0.2s ease-in-out;
 	margin: 0.5rem;
-	/* color: rgb(0, 255, 0) */
+	color: white;
 }
 
 .forSelection {
@@ -102,10 +101,6 @@ button {
 .menu .test-div {
 	margin-top: auto;
 	/* width: 500px; */
-}
-
-.test-div button {
-	color: white;
 }
 
 .forCanvas {
@@ -407,6 +402,7 @@ button {
 	padding: 10px 5px;
 	transition: transform 200ms ease-in-out;
 	box-sizing: border-box;
+	z-index: 7;
 }
 
 .options div {
@@ -515,4 +511,52 @@ button {
 .right {
 	margin-left: auto;
 	border-radius: 8px 8px 0px 8px;
+}
+
+.forSelection button {
+	background-color: transparent;
+	border: none;
+	outline: none;
+	border-radius: 50%;
+	width: 10ch;
+	height: 10ch;
+	margin: 0 8px;
+	padding: 4px;
+}
+
+.forSelection button img {
+	height: 7ch;
+}
+
+.notification {
+	animation: notification-animation 300ms cubic-bezier(0.84, 0.15, 0.81, 1.83)
+		infinite alternate;
+}
+
+@keyframes notification-animation {
+	100% {
+		background-color: rgba(60, 255, 1, 0.739);
+		transform: translateX(4ch);
+	}
+}
+
+.notification-msg {
+	animation: notification-msg-animation 300ms
+		cubic-bezier(0.84, 0.15, 0.81, 1.83) infinite alternate;
+	background-color: rgb(0, 255, 0);
+}
+
+@keyframes notification-msg-animation {
+	25% {
+		transform: rotate(10deg);
+	}
+	50% {
+		transform: rotate(0deg);
+	}
+	75% {
+		transform: rotate(-10deg);
+	}
+	100% {
+		transform: rotate(0deg);
+	}
 }

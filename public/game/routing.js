@@ -60,6 +60,7 @@ socket.on("matched", (data) => {
 	searching = false;
 	playing = true;
 	clearInterval(searchingAnimation);
+	closePopAllPopUps();
 	document.getElementById("showRequest").style.display = "none";
 	document.getElementById("openMessagePannel").style.display = "flex";
 

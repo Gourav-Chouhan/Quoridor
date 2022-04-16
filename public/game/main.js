@@ -1,5 +1,5 @@
 let currentMode = document.getElementById("move");
-currentMode.style.backgroundColor = "#00ff00";
+currentMode.style.border = "#00ff00 4px solid";
 function isBox(a, b) {
 	return a % 2 == 0 && b % 2 == 0;
 }
@@ -120,18 +120,17 @@ function whoami(i, j) {
 
 function toHbarMode() {
 	clickSound.play();
-	currentMode.style.backgroundColor = "#ff8cb8";
+	currentMode.style.border = "none";
 	currentMode = document.getElementById("hbar");
-	currentMode.style.backgroundColor = "#00ff00";
+	currentMode.style.border = "4px solid lightgreen";
 	mode = "hbar";
 }
 
 function toVbarMode() {
 	clickSound.play();
-
-	currentMode.style.backgroundColor = "#ff8cb8";
+	currentMode.style.border = "none";
 	currentMode = document.getElementById("vbar");
-	currentMode.style.backgroundColor = "#00ff00";
+	currentMode.style.border = "4px solid lightgreen";
 
 	mode = "vbar";
 }
@@ -139,9 +138,9 @@ function toVbarMode() {
 function toMoveMode() {
 	clickSound.play();
 
-	currentMode.style.backgroundColor = "#ff8cb8";
+	currentMode.style.border = "none";
 	currentMode = document.getElementById("move");
-	currentMode.style.backgroundColor = "#00ff00";
+	currentMode.style.border = "4px solid lightgreen";
 
 	mode = "move";
 }
@@ -232,6 +231,16 @@ socket.on("matchMoves", (data) => {
 		looseSound.play();
 		showPopUp(data.msg);
 	} else if (data.type == "chatMessage") {
+		if (
+			document
+				.getElementById("optionsToggler")
+				.parentElement.classList.contains("options-open") == false
+		) {
+			document.getElementById("optionsToggler").classList.add("notification");
+		}
+		document
+			.getElementById("openMessagePannel")
+			.classList.add("notification-msg");
 		console.log(data);
 		sendMessage(true, data.message);
 		return;

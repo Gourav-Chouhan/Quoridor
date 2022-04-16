@@ -210,6 +210,13 @@ socket.on("receiveMatchRequest", (data) => {
 	}
 	document.getElementById("showRequest").style.animation =
 		"gotRequestAnimation 1s infinite ease-in";
+	if (
+		document
+			.getElementById("optionsToggler")
+			.parentElement.classList.contains("options-open") == false
+	) {
+		document.getElementById("optionsToggler").classList.add("notification");
+	}
 	addIncomingToList(data);
 });
 
@@ -226,10 +233,12 @@ function closePopAllPopUps() {
 	incomingRequestParent.style.display = "none";
 	// document.getElementById("showRequest").style.display = "none";
 	document.getElementById("messages").style.display = "none";
+	document.getElementById("leaderboardDiv").style.display = "none";
 }
 
 document.getElementById("optionsToggler").addEventListener("click", (e) => {
 	e.target.parentElement.parentElement.classList.toggle("options-open");
+	e.target.parentElement.classList.remove("notification");
 });
 
 let messageBox = document.getElementsByClassName("message-box")[0];
@@ -269,6 +278,9 @@ document.getElementById("openMessagePannel").style.display = "none";
 document.getElementById("openMessagePannel").addEventListener("click", (e) => {
 	closePopAllPopUps();
 	document.getElementById("messages").style.display = "flex";
+	document
+		.getElementById("openMessagePannel")
+		.classList.remove("notification-msg");
 });
 
 document.getElementById("openLeaderboard").addEventListener("click", () => {
